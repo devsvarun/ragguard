@@ -3,14 +3,14 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ragguard"
+name = "rag-context-guard"
 version = "0.1.0"
 description = "Middleware that prevents sensitive information leakage in RAG pipelines by analyzing the context assembly graph"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 keywords = ["rag", "security", "privacy", "llm", "middleware"]
-authors = [{name = "RagGuard Contributors"}]
+authors = [{name = "RagContextGuard Contributors"}]
 
 dependencies = [
     "pyyaml>=6.0",

@@ -1,11 +1,11 @@
 """
-ragguard — Context-aware authorization layer for RAG pipelines.
+rag-context-guard — Context-aware authorization layer for RAG pipelines.
 
 Analyzes retrieved chunks before they reach the LLM and signals
 whether the combination is safe or risks data leakage.
 
 Quick start:
-    from ragguard import GuardMiddleware
+    from rag_context_guard import GuardMiddleware
 
     guard = GuardMiddleware()  # uses built-in default policy
     result = guard.analyze(chunks)
@@ -14,7 +14,7 @@ Quick start:
         print(result.risk_explanation)
 
 Using a built-in policy:
-    from ragguard import GuardMiddleware, policies
+    from rag_context_guard import GuardMiddleware, policies
 
     guard = GuardMiddleware(policy_path=policies.HIPAA)
 

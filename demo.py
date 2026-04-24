@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-RagGuard Quick Demo — no external LLM required.
+RagContextGuard Quick Demo — no external LLM required.
 
-This demonstrates how RagGuard analyzes retrieved document chunks
+This demonstrates how RagContextGuard analyzes retrieved document chunks
 and blocks queries that would combine sensitive information.
 """
 
@@ -12,12 +12,12 @@ import os
 # Add src to path for installation-less development
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-from ragguard import GuardMiddleware, policies
+from rag_context_guard import GuardMiddleware, policies
 
 
 def main():
     print("=" * 65)
-    print("RAGGUARD — Quick Demo")
+    print("RAG-CONTEXT-GUARD — Quick Demo")
     print("=" * 65)
 
     # Step 1: Initialize the guard with a policy

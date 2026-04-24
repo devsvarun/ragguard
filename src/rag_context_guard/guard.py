@@ -1,4 +1,4 @@
-"""GuardMiddleware: main entry point for ragguard."""
+"""GuardMiddleware: main entry point for rag-context-guard."""
 
 import logging
 import pathlib

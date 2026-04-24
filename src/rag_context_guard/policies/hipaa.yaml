@@ -1,4 +1,4 @@
-# ragguard HIPAA policy
+# rag-context-guard HIPAA policy
 # Covers Protected Health Information (PHI) combination patterns
 # that may constitute HIPAA violations when combined in an LLM context window.
 

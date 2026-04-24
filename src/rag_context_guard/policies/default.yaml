@@ -1,4 +1,4 @@
-# ragguard default policy
+# rag-context-guard default policy
 # Covers the most common sensitive data combination patterns.
 # Override by passing your own policy_path to GuardMiddleware.
 

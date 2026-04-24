@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Comprehensive test suite for RagGuard library.
+Comprehensive test suite for RagContextGuard library.
 Tests all core functionality, edge cases, and security requirements.
 """
 
@@ -12,15 +12,15 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-from ragguard import GuardMiddleware, Action
-from ragguard.policy import PolicyEngine
-from ragguard.models import Chunk, AnalysisResult
+from rag_context_guard import GuardMiddleware, Action
+from rag_context_guard.policy import PolicyEngine
+from rag_context_guard.models import Chunk, AnalysisResult
 
 
 # ─── Test configuration ──────────────────────────────────────────────────────
 
 POLICY_FILE = os.path.join(
-    os.path.dirname(__file__), "src", "ragguard", "policies", "example.yaml"
+    os.path.dirname(__file__), "src", "rag_context_guard", "policies", "example.yaml"
 )
 TEST_POLICY = """
 rules:
@@ -275,7 +275,7 @@ def test_5_security_yaml_safe_load():
     """Verify that policy.py uses yaml.safe_load (not yaml.load)."""
     section("5. Security: YAML safe_load check")
     policy_py_path = os.path.join(
-        os.path.dirname(__file__), "src", "ragguard", "policy.py"
+        os.path.dirname(__file__), "src", "rag_context_guard", "policy.py"
     )
 
     with open(policy_py_path, "r", encoding="utf-8") as f:
@@ -311,11 +311,11 @@ def test_6_real_world_format():
     ]
 
     # User would map: chunks = [{"text": d.page_content, "meta": d.metadata} for d in docs]
-    ragguard_chunks = [
+    chunks = [
         {"text": doc["page_content"], "meta": doc["metadata"]} for doc in langchain_docs
     ]
 
-    result = guard.analyze(ragguard_chunks)
+    result = guard.analyze(chunks)
     assert not result.is_safe, "Should detect the financial+entity violation"
     print("      [PASS] LangChain-style mapping works correctly")
 
@@ -327,7 +327,7 @@ def test_6_real_world_format():
             "metadata": {"classification": "internal_code"},
         },
     ]
-    # Already in ragguard format
+    # Already in rag-context-guard format
     result2 = guard.analyze(llamaindex_nodes)
     # These are both internal/internal_code - no forbidden edge in example policy, so safe
     assert result2.is_safe, "internal+internal_code should be safe under current policy"
@@ -443,7 +443,7 @@ def test_9_missing_required_fields():
 def run_all_tests():
     """Execute all test cases and report results."""
     print("\n" + "=" * 60)
-    print("RAGGUARD COMPREHENSIVE TEST SUITE")
+    print("RAG-CONTEXT-GUARD COMPREHENSIVE TEST SUITE")
     print("=" * 60)
 
     tests = [

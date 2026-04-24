@@ -1,8 +1,8 @@
-# RagGuard
+# RagContextGuard
 
 **Prevent sensitive information leakage in RAG pipelines.**
 
-RagGuard is a lightweight Python middleware that analyzes retrieved document chunks before they reach your LLM. It detects when innocent-looking chunks combine to reveal secrets.
+RagContextGuard is a lightweight Python middleware that analyzes retrieved document chunks before they reach your LLM. It detects when innocent-looking chunks combine to reveal secrets.
 
 ## Installation
 
@@ -10,11 +10,11 @@ RagGuard is a lightweight Python middleware that analyzes retrieved document chu
 pip install -e .
 ```
 
-This installs `ragguard` with its dependencies (`pyyaml`).
+This installs `rag-context-guard` with its dependencies (`pyyaml`).
 
 ## Quick Demo
 
-Run the included demo to see RagGuard in action:
+Run the included demo to see RagContextGuard in action:
 
 ```bash
 python demo.py
@@ -35,7 +35,7 @@ Expected output: `[PASS] All tests passed!` (9/9 tests). If you've added custom 
 ## How It Works
 
 1. **Classifications**: Each chunk carries one or more labels (e.g., `"financial"`, `"pii"`, `"confidential"`). These come from your existing metadata or an optional LLM classifier you provide.
-2. **Set Analysis**: RagGuard checks whether the union of all chunk classifications satisfies any policy rule's `trigger.all_present` condition.
+2. **Set Analysis**: RagContextGuard checks whether the union of all chunk classifications satisfies any policy rule's `trigger.all_present` condition.
 3. **Path Analysis**: Multi-hop collusion detection finds when a shared classification bridges two otherwise-safe rules, creating a dangerous combination.
 4. **Actions**: Rules can `block` (halt pipeline) or `warn` (log only).
 
@@ -60,36 +60,13 @@ rules:
 ## Usage
 
 ```python
-from ragguard import GuardMiddleware, policies
+from rag_context_guard import GuardMiddleware, policies
 
 # Use built-in policy
 guard = GuardMiddleware(policies.DEFAULT)
 
 # Or your custom file
 # guard = GuardMiddleware("my_policy.yaml")
-
-chunks = [
-    {
-        "text": "Acme Corp Q3 revenue: $5.2M",
-        "meta": {"classification": "financial", "entity": "Acme Corp"}
-    },
-    {
-        "text": "Acme Corp is a confidential client",
-        "meta": {"classification": "entity_identifier", "entity": "Acme Corp"}
-    },
-    {
-        "text": "React and TypeScript power the dashboard",
-        "meta": {"classification": "technology"}
-    },
-]
-
-result = guard.analyze(chunks)
-
-if result.is_safe:
-    print("Proceed — all clear")
-else:
-    print(f"Blocked: {result.risk_explanation}")
-    # Optionally use result.safe_subset for a partial answer
 ```
 
 ### Chunk format
@@ -110,7 +87,7 @@ Any extra metadata fields are ignored by the policy engine.
 | `policies.GDPR` | EU personal data compliance | 6 |
 
 ```python
-from ragguard import GuardMiddleware, policies
+from rag_context_guard import GuardMiddleware, policies
 
 guard = GuardMiddleware(policies.FINANCE)
 ```
@@ -120,21 +97,8 @@ guard = GuardMiddleware(policies.FINANCE)
 If your chunks lack pre-computed classification metadata, you can provide a classifier function that runs an LLM to tag chunks:
 
 ```python
-from ragguard import GuardMiddleware
+from rag_context_guard import GuardMiddleware
 from langchain_ollama import OllamaLLM   # pip install langchain-ollama
-
-def llm_classifier(text: str) -> str | None:
-    llm = OllamaLLM(model="qwen2.5:7b-instruct-q4_K_M")
-    prompt = f"""Classify this text into ONE category:
-Categories: financial, entity_identifier, confidential, personal_detail,
-            technology, internal_code, external_user, pii, safe
-
-Text: "{text}"
-Respond with only the category name:"""
-    result = llm.invoke(prompt).strip().lower()
-    return None if result == "safe" else result
-
-guard = GuardMiddleware(classifier=llm_classifier)
 ```
 
 The classifier is called only for chunks without existing classifications.
@@ -180,7 +144,7 @@ Returned by `analyze()`:
 
 ## Creating Custom Policies
 
-Copy `src/ragguard/policies/example.yaml` and adapt:
+Copy `src/rag_context_guard/policies/example.yaml` and adapt:
 
 ```yaml
 rules:
@@ -200,8 +164,8 @@ guard = GuardMiddleware("my_policy.yaml")
 ## Project Structure
 
 ```
-ragguard/
-├── src/ragguard/
+rag-context-guard/
+├── src/rag_context_guard/
 │   ├── guard.py           # GuardMiddleware
 │   ├── graph_analyzer.py  # Policy evaluation engine
 │   ├── policy.py          # YAML policy loader
