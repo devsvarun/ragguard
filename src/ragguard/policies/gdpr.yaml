@@ -1,0 +1,58 @@
+# ragguard GDPR policy
+# Covers personal data combination patterns relevant to GDPR compliance.
+# Focuses on combinations that constitute processing of sensitive personal data.
+
+rules:
+  - name: identity_location_link
+    description: "Personal identifier + location data enables tracking"
+    action: block
+    trigger:
+      all_present:
+        - personal_identifier
+        - location
+    message: "Personal identifier combined with location data — GDPR tracking risk"
+
+  - name: identity_behaviour_profiling
+    description: "Personal identifier + behavioural data enables profiling"
+    action: block
+    trigger:
+      all_present:
+        - personal_identifier
+        - behavioural
+    message: "Personal identifier combined with behavioural data — GDPR profiling risk"
+
+  - name: identity_financial_exposure
+    description: "Personal identifier + financial data"
+    action: block
+    trigger:
+      all_present:
+        - personal_identifier
+        - financial
+    message: "Personal identifier combined with financial data — GDPR Article 9 risk"
+
+  - name: sensitive_category_data
+    description: "Special category data (health, religion, politics) + identifier"
+    action: block
+    trigger:
+      all_present:
+        - sensitive_category
+        - personal_identifier
+    message: "Special category data combined with personal identifier — GDPR Article 9 violation risk"
+
+  - name: minor_data_exposure
+    description: "Data relating to minors requires extra protection"
+    action: block
+    trigger:
+      all_present:
+        - minor
+        - personal_identifier
+    message: "Data relating to a minor combined with personal identifier — heightened GDPR protection required"
+
+  - name: cross_border_data_risk
+    description: "Personal data + cross-border transfer indicator"
+    action: warn
+    trigger:
+      all_present:
+        - personal_identifier
+        - cross_border
+    message: "Personal data combined with cross-border transfer context — GDPR Chapter V compliance required"

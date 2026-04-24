@@ -1,0 +1,58 @@
+# ragguard Finance policy
+# Covers data combination patterns common in financial services
+# that risk client confidentiality or regulatory violations.
+
+rules:
+  - name: revenue_client_reveal
+    description: "Revenue figures + client name reveals confidential financials"
+    action: block
+    trigger:
+      all_present:
+        - financial
+        - entity_identifier
+    message: "Revenue data combined with client identifier — confidential financials exposed"
+
+  - name: budget_vendor_exposure
+    description: "Budget figures + vendor name reveals spending patterns"
+    action: block
+    trigger:
+      all_present:
+        - budget
+        - vendor
+    message: "Budget data combined with vendor identifier — spending patterns exposed"
+
+  - name: portfolio_client_exposure
+    description: "Portfolio details + client identifier reveals investment strategy"
+    action: block
+    trigger:
+      all_present:
+        - portfolio
+        - entity_identifier
+    message: "Portfolio data combined with client identifier — investment strategy exposed"
+
+  - name: forecast_confidential_reveal
+    description: "Financial forecasts are highly sensitive when combined with entity info"
+    action: block
+    trigger:
+      all_present:
+        - forecast
+        - entity_identifier
+    message: "Financial forecast combined with entity identifier — forward-looking disclosure risk"
+
+  - name: deal_terms_exposure
+    description: "Deal terms + counterparty reveals negotiating position"
+    action: block
+    trigger:
+      all_present:
+        - deal_terms
+        - entity_identifier
+    message: "Deal terms combined with counterparty identifier — negotiating position exposed"
+
+  - name: financial_internal_code
+    description: "Financial data + internal system details reveals infrastructure"
+    action: warn
+    trigger:
+      all_present:
+        - financial
+        - internal_code
+    message: "Financial data combined with internal system details — infrastructure disclosure risk"

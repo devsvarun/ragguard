@@ -1,0 +1,25 @@
+CLASSIFICATION: STRICTLY CONFIDENTIAL — INTERNAL USE ONLY
+This document contains sensitive strategic and operational information about Acme Corp.
+Distribution is restricted to: Account Executive, Legal, Finance, and C-Suite only.
+Unauthorized disclosure may result in breach of NDA and legal liability.
+
+Acme Corp is currently evaluating three competing vendors as alternatives to our platform.
+Competitor analysis shared by their CTO in a private call on September 14, 2024:
+  - Vendor A (DataStream Inc.): Under active trial, 90-day POC started August 2024.
+  - Vendor B (FlowBase): Rejected due to compliance gaps. No longer a threat.
+  - Vendor C (NexPipe): Proposal submitted, pricing 12% below ours.
+
+Acme Corp has an internal deadline of Q1 2025 to make a final vendor decision.
+Their board has mandated a 10% reduction in SaaS spend for FY2025.
+This puts our renewal at risk unless we can demonstrate a 15% efficiency gain.
+
+Acme Corp has disclosed to us, under NDA, that they are planning an acquisition of a smaller competitor.
+Target company: DataSync Ltd (private, UK-based). Estimated deal value: $45 million.
+Acquisition expected to close by March 2025. Post-merger integration will require our platform to scale.
+This information is non-public and market-sensitive. Do not reference in any external document.
+
+Internal sentiment rating: MEDIUM RISK — renewal is not guaranteed.
+Executive sponsor relationship score: 7/10. Champion: Sarah Johnson (strong), David Lee (neutral).
+Last executive business review: October 22, 2024. Next scheduled: January 15, 2025.
+Action items from last EBR: Deliver custom analytics dashboard by November 30, 2024.
+Note: Acme Corp's board meeting is scheduled for December 12, 2024 — renewal decision expected after this date.

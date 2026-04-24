@@ -1,0 +1,54 @@
+rules:
+  - name: financial_confidential_reveal
+    description: "Block combining financial data with confidential client information"
+    action: block
+    trigger:
+      all_present:
+        - financial
+        - confidential
+    message: "Financial data combined with confidential client info — potential data leakage"
+
+  - name: financial_entity_reveal
+    description: "Financial data + entity identifier reveals client financials"
+    action: block
+    trigger:
+      all_present:
+        - financial
+        - entity_identifier
+    message: "Financial data combined with entity identifier — client financials exposed"
+
+  - name: pii_collusion
+    description: "Warn when PII categories are combined"
+    action: warn
+    trigger:
+      all_present:
+        - pii
+        - personal_detail
+    message: "PII combination may reveal identity"
+
+  - name: confidential_tech_exposure
+    description: "Prevent confidential projects from being linked with tech details"
+    action: block
+    trigger:
+      all_present:
+        - confidential
+        - technology
+    message: "Confidential project combined with tech details reveals proprietary implementation"
+
+  - name: budget_vendor_exposure
+    description: "Block combining budget figures with vendor names"
+    action: block
+    trigger:
+      all_present:
+        - budget
+        - vendor
+    message: "Budget figures combined with vendor names reveals spending patterns"
+
+  - name: internal_external_correlation
+    description: "Warn when internal code is combined with external user data"
+    action: warn
+    trigger:
+      all_present:
+        - internal_code
+        - external_user
+    message: "Internal code combined with external user data reveals attack surface"

@@ -1,0 +1,71 @@
+# ragguard default policy
+# Covers the most common sensitive data combination patterns.
+# Override by passing your own policy_path to GuardMiddleware.
+
+rules:
+  # --- Financial ---
+  - name: financial_entity_reveal
+    description: "Financial data + entity identifier reveals client financials"
+    action: block
+    trigger:
+      all_present:
+        - financial
+        - entity_identifier
+    message: "Financial data combined with entity identifier — client financials exposed"
+
+  - name: financial_confidential_reveal
+    description: "Financial data + confidential marker is a direct leakage risk"
+    action: block
+    trigger:
+      all_present:
+        - financial
+        - confidential
+    message: "Financial data combined with confidential classification — block to prevent leakage"
+
+  # --- PII ---
+  - name: pii_identity_collusion
+    description: "PII + personal detail reveals identity"
+    action: block
+    trigger:
+      all_present:
+        - pii
+        - personal_detail
+    message: "PII combined with personal detail — identity may be exposed"
+
+  - name: personal_entity_collusion
+    description: "Personal detail + entity identifier links identity to organization"
+    action: warn
+    trigger:
+      all_present:
+        - personal_detail
+        - entity_identifier
+    message: "Personal detail linked with entity identifier — review before sending to LLM"
+
+  # --- Confidential + Technical ---
+  - name: confidential_tech_exposure
+    description: "Confidential project + technology stack reveals implementation"
+    action: block
+    trigger:
+      all_present:
+        - confidential
+        - technology
+    message: "Confidential classification combined with technology details — proprietary implementation exposed"
+
+  # --- Internal Systems ---
+  - name: internal_external_attack_surface
+    description: "Internal code + external user data reveals attack surface"
+    action: warn
+    trigger:
+      all_present:
+        - internal_code
+        - external_user
+    message: "Internal code combined with external user data — potential attack surface disclosure"
+
+  - name: internal_code_entity_reveal
+    description: "Internal code + entity identifier links systems to specific clients"
+    action: block
+    trigger:
+      all_present:
+        - internal_code
+        - entity_identifier
+    message: "Internal system details combined with entity identifier — client-system relationship exposed"

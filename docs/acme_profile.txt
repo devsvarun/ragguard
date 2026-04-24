@@ -1,0 +1,20 @@
+Acme Corp is one of our longest-standing enterprise clients, having joined our platform in Q1 2019.
+The company is headquartered in San Francisco, California, with satellite offices in New York, Austin, and London.
+Primary account contact: Sarah Johnson, VP of Operations, reachable at sarah.johnson@acmecorp.com.
+Secondary contact: David Lee, CTO, david.lee@acmecorp.com.
+Acme Corp operates in the B2B SaaS sector and currently employs approximately 1,200 full-time staff.
+Their internal procurement team is led by Marcus Hill, Director of Vendor Relations.
+Acme Corp's legal entity is registered as Acme Corporation Inc., EIN: 47-1234567.
+The company was founded in 2011 by CEO Robert Haines and CFO Linda Park.
+Acme Corp holds a Series D funding round led by Sequoia Capital, completed in March 2022.
+Their stock ticker on NASDAQ is ACME, trading publicly since their IPO in 2020.
+Client account ID in our CRM: ENT-2024-0042.
+Renewal date for the enterprise contract: December 31, 2025.
+Acme Corp's primary use case on our platform is large-scale data pipeline orchestration.
+Their technical integration team consists of 14 engineers dedicated to our product.
+Escalation contact for critical issues: Robert Haines directly, +1-415-555-0192.
+Acme Corp has been flagged as a Tier 1 strategic account by our executive team.
+All communications with Acme Corp must be routed through the dedicated account team.
+The client has signed an NDA dated February 3, 2020, covering all proprietary information.
+Acme Corp participates in our early access program for beta features.
+Their preferred deployment region is US-West-2 on AWS infrastructure.

@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# IDE-specific
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build/dist
+build/
+dist/
+*.egg-info/
+*.egg
+wheelhouse/
+.eggs/
+
+# Local testing artifacts
+quick_test*.py
+extended_tests.py
+stress_tests.py
+multihop_verify.py

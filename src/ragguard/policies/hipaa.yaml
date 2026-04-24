@@ -1,0 +1,59 @@
+# ragguard HIPAA policy
+# Covers Protected Health Information (PHI) combination patterns
+# that may constitute HIPAA violations when combined in an LLM context window.
+
+rules:
+  - name: phi_identity_link
+    description: "Diagnosis or treatment info + patient identifier = PHI exposure"
+    action: block
+    trigger:
+      all_present:
+        - diagnosis
+        - patient_identifier
+    message: "Diagnosis combined with patient identifier — HIPAA PHI exposure risk"
+
+  - name: treatment_identity_link
+    description: "Treatment details + patient identifier = PHI exposure"
+    action: block
+    trigger:
+      all_present:
+        - treatment
+        - patient_identifier
+    message: "Treatment details combined with patient identifier — HIPAA PHI exposure risk"
+
+  - name: insurance_identity_link
+    description: "Insurance info + patient identifier reveals coverage"
+    action: block
+    trigger:
+      all_present:
+        - insurance
+        - patient_identifier
+    message: "Insurance information combined with patient identifier — coverage exposure risk"
+
+  - name: prescription_identity_link
+    description: "Prescription data + patient identifier = PHI"
+    action: block
+    trigger:
+      all_present:
+        - prescription
+        - patient_identifier
+    message: "Prescription data combined with patient identifier — HIPAA PHI exposure risk"
+
+  - name: diagnosis_insurance_collusion
+    description: "Diagnosis + insurance can reveal pre-existing conditions"
+    action: warn
+    trigger:
+      all_present:
+        - diagnosis
+        - insurance
+    message: "Diagnosis combined with insurance data — pre-existing condition disclosure risk"
+
+  - name: full_phi_triple
+    description: "Three-way PHI combination is a critical violation"
+    action: block
+    trigger:
+      all_present:
+        - patient_identifier
+        - diagnosis
+        - insurance
+    message: "Critical: patient identifier + diagnosis + insurance present — full PHI exposure"

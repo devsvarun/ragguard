@@ -1,0 +1,36 @@
+CONFIDENTIAL — HR RECORDS — RESTRICTED ACCESS
+This document contains personally identifiable information (PII).
+Access is restricted to HR personnel and authorized managers only.
+Retention policy: 7 years from date of termination.
+
+Employee: John Michael Smith
+Employee ID: EMP-0291
+Date of Birth: March 14, 1985
+Social Security Number: 123-45-6789
+Home Address: 42 Maple Street, Apt 3B, Austin, TX 78701
+Personal Email: john.smith.personal@gmail.com
+Mobile: +1-512-555-0147
+Emergency contact: Mary Smith (spouse), +1-512-555-0148
+Bank account for payroll: Routing 021000021, Account 4891023847 (Chase)
+Health insurance plan: Blue Cross PPO, Member ID: BCB-TX-2291847
+401k contribution rate: 8%. Employer match: 4%. Vested since 2022.
+Salary: $142,000 per annum. Last raise: April 2024, +8%.
+Performance rating 2023: Exceeds Expectations. Bonus paid: $18,000.
+Start date: June 3, 2019. Department: Platform Engineering. Manager: Alice Wong.
+Background check completed: June 1, 2019. Result: Clear.
+Visa status: US Citizen. Passport: US, expires 2029.
+
+Employee: Priya Anand
+Employee ID: EMP-0347
+Date of Birth: July 22, 1990
+Social Security Number: 987-65-4321
+Home Address: 18 Oak Lane, San Francisco, CA 94107
+Personal Email: priya.anand.home@outlook.com
+Mobile: +1-415-555-0263
+Emergency contact: Ravi Anand (brother), +1-415-555-0264
+Bank account for payroll: Routing 121000248, Account 7723019456 (Bank of America)
+Health insurance plan: Aetna HMO, Member ID: AET-CA-9982341
+Salary: $158,000 per annum. Last raise: January 2024, +10%.
+Performance rating 2023: Outstanding. Bonus paid: $22,000.
+Start date: February 12, 2021. Department: Data Science. Manager: Tom Bradley.
+Visa status: H-1B, sponsored by company, expires March 2026. USCIS receipt: EAC2190045231.

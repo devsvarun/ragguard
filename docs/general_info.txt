@@ -1,0 +1,20 @@
+Our company provides enterprise data infrastructure software to businesses across multiple industries.
+We were founded in 2015 and are headquartered in San Francisco, California.
+Our platform helps engineering teams build, manage, and monitor large-scale data pipelines.
+We currently serve over 400 enterprise clients across North America, Europe, and Asia-Pacific.
+Our core product offerings include pipeline orchestration, real-time data streaming, and analytics dashboards.
+The platform supports integrations with over 200 third-party tools including Snowflake, dbt, Airflow, and Kafka.
+We are SOC 2 Type II certified and GDPR compliant. Our ISO 27001 certification was renewed in 2024.
+Uptime SLA for enterprise customers: 99.95%. Measured uptime in 2024: 99.97%.
+Our support team operates 24/7 for Tier 1 enterprise clients and 9am-6pm EST for standard plans.
+Documentation is available at docs.ourplatform.com. API reference at api.ourplatform.com/docs.
+Our engineering blog publishes weekly articles on data engineering best practices.
+We host an annual user conference, PlatformSummit, each September in San Francisco.
+The company has 320 full-time employees across engineering, sales, support, and operations.
+Our open-source pipeline SDK has over 12,000 GitHub stars and 800 contributors.
+We offer three pricing tiers: Starter ($500/month), Growth ($2,000/month), and Enterprise (custom).
+New features are released on a bi-weekly cadence. Release notes are published at changelog.ourplatform.com.
+Our data residency options include US, EU, and APAC regions to support data sovereignty requirements.
+We have a bug bounty program managed through HackerOne with rewards up to $10,000 per critical finding.
+Training and certification programs are available through our Academy portal at academy.ourplatform.com.
+For sales inquiries, contact sales@ourplatform.com. For support, support@ourplatform.com.
