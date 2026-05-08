@@ -68,6 +68,16 @@ class Violation:
             f"Triggering chunks: {chunk_previews}"
         )
 
+    def to_dict(self) -> dict:
+        """Serialize violation to a plain dict."""
+        return {
+            "rule_name": self.rule_name,
+            "message": self.message,
+            "action": self.action.value,
+            "triggering_chunk_count": len(self.triggering_chunks),
+            "triggering_chunk_previews": [c.text[:200] for c in self.triggering_chunks],
+        }
+
 
 @dataclass
 class AnalysisResult:
@@ -76,3 +86,13 @@ class AnalysisResult:
     warnings: List[Violation] = field(default_factory=list)
     safe_subset: List[Chunk] = field(default_factory=list)
     risk_explanation: str = ""
+
+    def to_dict(self) -> dict:
+        """Serialize result to a plain dict for JSON logging or API responses."""
+        return {
+            "is_safe": self.is_safe,
+            "violations": [v.to_dict() for v in self.violations],
+            "warnings": [w.to_dict() for w in self.warnings],
+            "safe_chunk_count": len(self.safe_subset),
+            "risk_explanation": self.risk_explanation,
+        }

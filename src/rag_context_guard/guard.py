@@ -14,7 +14,11 @@ logger = logging.getLogger(__name__)
 #   Takes: text (str)
 #   Returns: list of classification strings (e.g. ["financial", "entity_identifier"])
 #            or a single string (e.g. "financial") — both are accepted
+#   Must not raise; errors are logged and treated as no classification.
 ClassifierFn = Callable[[str], Union[List[str], Optional[str]]]
+
+# Maximum chunk text size (100 KB) to prevent DoS via giant chunks
+MAX_CHUNK_SIZE_BYTES = 100 * 1024
 
 
 class GuardMiddleware:
@@ -48,6 +52,7 @@ class GuardMiddleware:
             classifier:  Optional callable. Takes chunk text, returns classification
                          string(s). Only needed if chunks don't have metadata.
                          Contract: (str) -> list[str] | str | None
+                         Errors and timeouts are caught — treated as no classification.
         """
         self.policy_engine = PolicyEngine(policy_path)
         self.analyzer = GraphAnalyzer(self.policy_engine.get_rules())
@@ -72,9 +77,14 @@ class GuardMiddleware:
 
         typed_chunks = self._prepare_chunks(chunks)
 
-        violations, warnings = self.analyzer.find_violations(typed_chunks)
+        # Build classification map once — used by both violation checks
+        classification_map = self.analyzer._build_classification_map(typed_chunks)
+
+        violations, warnings = self.analyzer.find_violations(
+            typed_chunks, classification_map
+        )
         path_violations, path_warnings = self.analyzer.find_forbidden_paths(
-            typed_chunks
+            typed_chunks, classification_map
         )
 
         all_violations = violations + path_violations
@@ -82,6 +92,7 @@ class GuardMiddleware:
         is_safe = len(all_violations) == 0
 
         # Build safe_subset — chunks not involved in any BLOCK violation
+        # Use text content as stable identifier (works across serialization)
         violating_texts = {c.text for v in all_violations for c in v.triggering_chunks}
         safe_subset = [c for c in typed_chunks if c.text not in violating_texts]
 
@@ -101,18 +112,31 @@ class GuardMiddleware:
             meta_raw = item.get("meta")
             meta = dict(meta_raw) if meta_raw else {}
 
+            # Size validation — prevent DoS via giant chunks
+            if len(text.encode("utf-8")) > MAX_CHUNK_SIZE_BYTES:
+                raise ValueError(
+                    f"Chunk exceeds maximum size of {MAX_CHUNK_SIZE_BYTES} bytes: "
+                    f"{len(text.encode('utf-8'))} bytes"
+                )
+
             # Only call classifier if chunk has no existing classification
             if self.classifier is not None and not self._has_classification(meta):
-                result = self.classifier(text)
-                if result:
-                    if isinstance(result, str):
-                        meta["classification"] = result
-                    elif isinstance(result, list):
-                        # Filter out "safe" — it's a no-op label
-                        labels = [r for r in result if r and r != "safe"]
-                        if labels:
-                            meta["classifications"] = labels
-                            meta["classification"] = labels[0]  # primary
+                try:
+                    result = self.classifier(text)
+                    if result:
+                        if isinstance(result, str):
+                            meta["classification"] = result
+                        elif isinstance(result, list):
+                            # Filter out "safe" — it's a no-op label
+                            labels = [r for r in result if r and r != "safe"]
+                            if labels:
+                                meta["classifications"] = labels
+                                meta["classification"] = labels[0]  # primary
+                except Exception as e:
+                    logger.warning(
+                        "Classifier failed for chunk (using unclassified): %s", e
+                    )
+                    # Continue without classification — chunk treated as unclassified
 
             typed.append(Chunk(text=text, meta=meta))
         return typed

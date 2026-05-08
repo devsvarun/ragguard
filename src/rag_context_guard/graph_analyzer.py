@@ -35,7 +35,7 @@ class GraphAnalyzer:
         return classification_map
 
     def find_violations(
-        self, chunks: List[Chunk]
+        self, chunks: List[Chunk], classification_map: Dict[str, Chunk] = None
     ) -> Tuple[List[Violation], List[Violation]]:
         """
         Check the full chunk set against every policy rule.
@@ -43,13 +43,19 @@ class GraphAnalyzer:
         A rule fires when ALL its required classifications are present
         across the chunk set — regardless of which chunk carries which label.
 
+        Args:
+            chunks: List of chunks to analyze
+            classification_map: Optional pre-built classification→chunk map.
+                               If None, builds it from chunks (slightly slower).
+
         Returns:
             (block_violations, warn_violations)
         """
         violations: List[Violation] = []
         warnings: List[Violation] = []
 
-        classification_map = self._build_classification_map(chunks)
+        if classification_map is None:
+            classification_map = self._build_classification_map(chunks)
         all_classifications = set(classification_map.keys())
 
         logger.debug("Classifications in context window: %s", all_classifications)
@@ -60,9 +66,11 @@ class GraphAnalyzer:
                 continue
 
             if required.issubset(all_classifications):
+                # Deduplicate chunks by text content (stable across serialization).
+                # If a chunk covers multiple required classifications, include it once.
                 triggering_chunks = list(
                     {
-                        id(classification_map[clf]): classification_map[clf]
+                        classification_map[clf].text: classification_map[clf]
                         for clf in required
                         if clf in classification_map
                     }.values()
@@ -85,7 +93,7 @@ class GraphAnalyzer:
         return violations, warnings
 
     def find_forbidden_paths(
-        self, chunks: List[Chunk]
+        self, chunks: List[Chunk], classification_map: Dict[str, Chunk] = None
     ) -> Tuple[List[Violation], List[Violation]]:
         """
         Multi-hop collusion detection.
@@ -98,11 +106,20 @@ class GraphAnalyzer:
             Rule B requires [entity_identifier, confidential]
             If financial + entity_identifier + confidential are all present,
             entity_identifier is the bridge — both rules are jointly implicated.
+
+        Args:
+            chunks: List of chunks to analyze
+            classification_map: Optional pre-built classification→chunk map.
+                               If None, builds it from chunks (slightly slower).
+
+        Returns:
+            (block_violations, warn_violations)
         """
         violations: List[Violation] = []
         warnings: List[Violation] = []
 
-        classification_map = self._build_classification_map(chunks)
+        if classification_map is None:
+            classification_map = self._build_classification_map(chunks)
         all_classifications = set(classification_map.keys())
 
         # Need at least 3 distinct classifications for a multi-hop
@@ -134,9 +151,10 @@ class GraphAnalyzer:
             if not combined_required.issubset(all_classifications):
                 continue
 
+            # Deduplicate chunks by text content (stable across serialization)
             triggering_chunks = list(
                 {
-                    id(classification_map[clf]): classification_map[clf]
+                    classification_map[clf].text: classification_map[clf]
                     for clf in combined_required
                     if clf in classification_map
                 }.values()

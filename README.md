@@ -18,6 +18,17 @@ pip install rag-context-guard
 
 RAG systems retrieve multiple document chunks to answer questions. Even if each chunk is safe individually, their combination can expose secrets. For example, one chunk might contain salary ranges while another lists employee names—separately they're harmless, together they reveal payroll data. RagContextGuard prevents this by analyzing the full context set before it reaches the LLM.
 
+### Security model
+
+**Classified metadata is a trusted input.** RagContextGuard assumes classification labels come from a trusted source (your ingestion pipeline, vetted taxonomies, or a carefully-controlled LLM classifier). The guard does not validate label semantics; it only checks whether the *set* of labels triggers a policy rule.
+
+If an attacker can inject arbitrary classification labels into chunk metadata (e.g., by compromising your vector DB or classifier), they can bypass or trigger rules at will. **Treat classification metadata as security-critical configuration.**
+
+For production, we recommend:
+- Label only from trusted ingestion-time classifiers (not per-query)
+- Validating classification strings against an allowlist (`/^[a-z_]+$/`)
+- Auditing classification sources regularly
+
 ## How It Works
 
 1. **Classifications**: Each chunk carries one or more labels (e.g., `"financial"`, `"pii"`, `"confidential"`). These come from your existing metadata or an optional LLM classifier you provide.
@@ -109,6 +120,8 @@ from langchain_ollama import OllamaLLM   # pip install langchain-ollama
 
 The classifier is called only for chunks without existing classifications.
 
+**⚠️ Important:** The classifier feature is intended for prototyping and evaluation only. Running an LLM per chunk at query time is slow (adds latency) and expensive (cost scales with retrieval chunk count). For production, pre-classify documents at ingestion time and store classifications with your vector DB entries. See "Why This Exists" above for the trusted-classification model.
+
 ## API Reference
 
 ### `GuardMiddleware`
@@ -132,11 +145,17 @@ Returned by `analyze()`:
 - `safe_subset: List[Chunk]` — chunks not involved in any block violation
 - `risk_explanation: str` — human-readable summary
 
+**Methods:**
+- `to_dict() -> dict` — serialize to plain dict for JSON logging or API responses
+
 ### `Violation`
 - `rule_name: str`
 - `message: str`
 - `triggering_chunks: List[Chunk]`
 - `action: Action` (`Action.BLOCK` or `Action.WARN`)
+
+**Methods:**
+- `to_dict() -> dict` — serialize to plain dict
 
 ## Creating Custom Policies
 
