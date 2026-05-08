@@ -4,13 +4,26 @@
 
 RagContextGuard is a lightweight Python middleware that analyzes retrieved document chunks before they reach your LLM. It detects when innocent-looking chunks combine to reveal secrets.
 
+[![PyPI version](https://img.shields.io/pypi/v/rag-context-guard)](https://pypi.org/project/rag-context-guard/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python: 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
 ## Installation
 
 ```bash
-pip install -e .
+pip install rag-context-guard
 ```
 
-This installs `rag-context-guard` with its dependencies (`pyyaml`).
+## Why This Exists
+
+RAG systems retrieve multiple document chunks to answer questions. Even if each chunk is safe individually, their combination can expose secrets. For example, one chunk might contain salary ranges while another lists employee names—separately they're harmless, together they reveal payroll data. RagContextGuard prevents this by analyzing the full context set before it reaches the LLM.
+
+## How It Works
+
+1. **Classifications**: Each chunk carries one or more labels (e.g., `"financial"`, `"pii"`, `"confidential"`). These come from your existing metadata or an optional LLM classifier you provide.
+2. **Set Analysis**: RagContextGuard checks whether the union of all chunk classifications satisfies any policy rule's `trigger.all_present` condition.
+3. **Path Analysis**: Multi-hop collusion detection finds when a shared classification bridges two otherwise-safe rules, creating a dangerous combination.
+4. **Actions**: Rules can `block` (halt pipeline) or `warn` (log only).
 
 ## Quick Demo
 
@@ -31,13 +44,6 @@ python test_comprehensive.py
 ```
 
 Expected output: `[PASS] All tests passed!` (9/9 tests). If you've added custom policies or modified the engine, run this to verify correctness.
-
-## How It Works
-
-1. **Classifications**: Each chunk carries one or more labels (e.g., `"financial"`, `"pii"`, `"confidential"`). These come from your existing metadata or an optional LLM classifier you provide.
-2. **Set Analysis**: RagContextGuard checks whether the union of all chunk classifications satisfies any policy rule's `trigger.all_present` condition.
-3. **Path Analysis**: Multi-hop collusion detection finds when a shared classification bridges two otherwise-safe rules, creating a dangerous combination.
-4. **Actions**: Rules can `block` (halt pipeline) or `warn` (log only).
 
 ## Policy Format
 
@@ -103,16 +109,6 @@ from langchain_ollama import OllamaLLM   # pip install langchain-ollama
 
 The classifier is called only for chunks without existing classifications.
 
-## Running Tests
-
-The project includes a comprehensive test suite:
-
-```bash
-python test_comprehensive.py
-```
-
-Expected output: `[PASS] All tests passed!` (9/9 tests). If you've added custom policies or modified the engine, run this to verify correctness.
-
 ## API Reference
 
 ### `GuardMiddleware`
@@ -141,6 +137,49 @@ Returned by `analyze()`:
 - `message: str`
 - `triggering_chunks: List[Chunk]`
 - `action: Action` (`Action.BLOCK` or `Action.WARN`)
+
+## Creating Custom Policies
+
+Copy `src/rag_context_guard/policies/example.yaml` and adapt:
+
+```yaml
+rules:
+  - name: healthcare_pii_exposure
+    action: block
+    trigger:
+      all_present: [healthcare, pii]
+    message: "Healthcare data combined with PII — exposure risk"
+```
+
+Then load it:
+
+```python
+guard = GuardMiddleware("my_policy.yaml")
+```
+
+## Project Structure
+
+```
+rag-context-guard/
+├── src/rag_context_guard/
+│   ├── guard.py           # GuardMiddleware
+│   ├── graph_analyzer.py  # Policy evaluation engine
+│   ├── policy.py          # YAML policy loader
+│   ├── models.py          # Dataclasses (Chunk, Violation, AnalysisResult)
+│   └── policies/          # Built-in YAML policies
+│       ├── default.yaml
+│       ├── finance.yaml
+│       ├── hipaa.yaml
+│       └── gdpr.yaml
+├── demo.py                # Example usage (no external LLM needed)
+├── test_comprehensive.py  # Full test suite
+├── pyproject.toml         # Dependency + build config
+└── README.md
+```
+
+## License
+
+MIT
 
 ## Creating Custom Policies
 
